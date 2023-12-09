@@ -1,6 +1,7 @@
 use std::fs;
 use std::fs::File;
 use std::io::{Read, Seek, SeekFrom};
+use rand::Rng;
 
 
 fn read_i16(file: &mut File) -> i16 {
@@ -12,8 +13,14 @@ fn read_i16(file: &mut File) -> i16 {
     // println!("Adjusted: {}", v as f64 * 0.1949999928474426);
 }
 
+fn rand_idx(fsize: u64) -> u64 {
+    let mut rng = rand::thread_rng();
+    let num: u64 = rng.gen_range(0..(fsize/2)-1);
+    return num;
+}
 
-fn read_continuous() {
+
+fn main() {
     let dir = "..\\simple-spykes\\data\\Record Node 105\\experiment1\\recording1\\continuous\\Neuropix-PXI-104.ProbeA-AP\\continuous.dat";
     let metadata = fs::metadata(dir);
     let file_size: u64;
@@ -49,21 +56,39 @@ fn read_continuous() {
 
     let f = File::open(dir);
     let mut data = vec![];
+    let mut randoms = vec![];
+    randoms.append(&mut vec![0]);
+    for _ in 0..100 {
+        let rand = rand_idx(file_size);
+        randoms.push(rand);
+    }
+
 
     match f {
         Ok(mut file) => {
+            for rand in randoms.iter() {
+                file.seek(SeekFrom::Start((*rand)*2)).unwrap();
+                data.push(read_i16(&mut file));
+            }
+            // TODO Check these outputs against NEO, see link for exact line info (currently manual)
+            // https://github.com/NeuralEnsemble/python-neo/blob/51063dbf581cc6aaeb35858023a147acc1b66ccf/neo/rawio/openephysbinaryrawio.py#L149
+            /* PYTHON CHECK CODE
+            idxes = [<randoms>]
+            g = memmap, NOT .reshape'd
+            myprog = <data>
 
-            // file.seek(SeekFrom::Start((*rand)*2)).unwrap();
-            data.push(read_i16(&mut file));
+            assert all([g[idxes[i]] == myprog[i] for i in range(len(idxes))])
+            */
+
             println!("Data: {:?}", data);
+            println!("Rands: {:?}", randoms);
         },
         Err(err) => {
             panic!("Cannot open file: {}", err);
         }
     }
 
-}
+    // TODO automate check with python?
 
-fn main() {
-    // TODO Read numpy files
+
 }

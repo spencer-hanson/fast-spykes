@@ -64,6 +64,37 @@ fn read_continuous() {
 
 }
 
+fn read_kilosort() {
+    /*
+    Useful files (for all see https://github.com/kwikteam/phy-contrib/blob/master/docs/template-gui.md)
+
+    - spike_times.npy - 1 x n_spikes arr with the times of each spike in *samples*
+    - templates.npy - [nTemplates, nTimePoints, nTempChannels] single matrix giving the template
+        shapes on the channels given in templates_ind.npy
+    - spike_clusters.npy - [nSpikes, ] int32 vector giving the cluster identity of each spike.
+        This file is optional and if not provided will be automatically created the first time you
+        run the template gui, taking the same values as spike_templates.npy until you do any
+        merging or splitting.
+    - spike_templates.npy - [nSpikes, ] uint32 vector specifying the identity of the template that
+        was used to extract each spike
+    - amplitudes.npy - [nSpikes, ] double vector with the amplitude scaling factor that was applied
+        to the template when extracting that spike
+
+    Notes:
+    - spike 'duration' is going to be the width of the waveform template for the given spike
+    - To get spikes for a particular cluster
+        1. Use spike_clusters.npy or spike_templates.npy for spike_num -> cluster_num
+        2. Reverse to cluster_num -> spike_num
+    - To get amplitudes for particular cluster
+        1. cluster_num -> spike_num
+        2. use amplitudes.npy for spike_num -> amplitude
+    - Amplitude cutoff link https://github.com/AllenInstitute/ecephys_spike_sorting/blob/master/ecephys_spike_sorting/modules/quality_metrics/metrics.py#L627
+    
+    */
+
+    todo!("Read numpy files here");
+}
+
 fn main() {
-    // TODO Read numpy files
+    read_kilosort();
 }

@@ -1,32 +1,34 @@
-use std::any::TypeId;
 use std::fs::{File};
-use ndarray::{ArrayBase, Array1, Array2, OwnedRepr, AsArray, IxDyn, Array, Dimension};
+use ndarray::{IxDyn, Array, NdIndex};
 use ndarray_npy::{ReadableElement, ReadNpyExt};
-use crate::fast_spykes::io::load_file;
+use crate::fast_spykes::io::{FileArray, load_file};
 
-// pub struct NumpyArr<'a, T, A: AsArray<'a, T>> {
-//     data: dyn A,
-// }
-
-
-pub struct NumpyArr<T: ReadableElement> {
+pub struct NumpyArray<T: ReadableElement> {
     data: Array<T, IxDyn>
 }
 
-impl<T: ReadableElement> NumpyArr<T> {
+impl<T: ReadableElement> NumpyArray<T> {
     pub fn from_filename(filename: &str) -> Result<Self, String> {
-        let file = load_numpy(filename)?;
-       // let dims: i32 = D::get_dimensions();
+        let file = load_numpy_file(filename)?;
 
         return match Array::<T, IxDyn>::read_npy(file) {
-            Ok(data) => Ok(NumpyArr{data}),
-            _ => panic!("asdfads")
+            Ok(data) =>
+                Ok(NumpyArray {
+                    data
+                }),
+            Err(e) => {
+                Err(format!("Error reading .npy file '{}'! Error: {:?}", filename, e))
+            }
         };
     }
-
-    
 }
-pub fn load_numpy(filename: &str) -> Result<File, String> {
+
+impl<T: ReadableElement + Clone> FileArray<T> for NumpyArray<T> {
+    fn get(&mut self, idx_vec: Vec<usize>) -> T {
+        return self.data.get(idx_vec.as_slice()).unwrap().clone();
+    }
+}
+pub fn load_numpy_file(filename: &str) -> Result<File, String> {
     let file = load_file(filename, |_| {Ok(())})?;
     return Ok(file);
 }

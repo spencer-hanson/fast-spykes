@@ -3,6 +3,7 @@ use std::fs::File;
 use std::io::{Read, Seek, SeekFrom};
 use rand::Rng;
 
+// TODO read from funcs not this file
 
 fn read_i16(file: &mut File) -> i16 {
     let mut buf: [u8 ; 2] = [0; 2];
@@ -53,6 +54,27 @@ fn main() {
     */
     println!("Number of channels: {}", num_channels);
     println!("Number of samples per channel: {}", file_size/(num_channels*2));
+
+
+    // let file_len = arr.len();
+    // let mut randoms = vec![];
+    // let mut data: Vec<f64> = vec![];
+    //
+    // let mut rng = rand::thread_rng();
+    // randoms.append(&mut vec![0]);
+    // data.push(arr[[0, 0]]);
+    //
+    // for _ in 0..100 {
+    //     let num = rng.gen_range(0..file_len);
+    //     randoms.push(num);
+    //     data.push(arr[[num, 0]]);
+    // }
+    //
+    // println!("gen_vals = {:?}", data);
+    // println!("idxes = {:?}", randoms);
+    //
+    // println!("arr len {}", data.len());
+
 
     let f = File::open(dir);
     let mut data = vec![];

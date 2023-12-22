@@ -1,7 +1,12 @@
+mod fast_spykes;
+
 use std::fs;
 use std::fs::File;
 use std::io::{Read, Seek, SeekFrom};
-
+use ndarray::Array2;
+use rand::Rng;
+// use crate::fast_spykes::io::numpy::{load_arr1, load_arr2};
+use fast_spykes::io::numpy::{NumpyArr};
 
 fn read_i16(file: &mut File) -> i16 {
     let mut buf: [u8 ; 2] = [0; 2];
@@ -89,10 +94,36 @@ fn read_kilosort() {
         1. cluster_num -> spike_num
         2. use amplitudes.npy for spike_num -> amplitude
     - Amplitude cutoff link https://github.com/AllenInstitute/ecephys_spike_sorting/blob/master/ecephys_spike_sorting/modules/quality_metrics/metrics.py#L627
-    
+
     */
 
-    todo!("Read numpy files here");
+    let dir = "..\\simple-spykes\\data\\Record Node 105\\experiment1\\recording1\\continuous\\Neuropix-PXI-104.ProbeA-AP\\";
+
+    let amplitudes = NumpyArr::<f64>::from_filename(&format!("{}{}", dir, "amplitudes.npy")).unwrap();
+    // let amplitudes = NumpyArr::<f64, Array2>::from_filename(&format!("{}{}", dir, "amplitudes.npy")).unwrap();
+    // let clusters = load_arr1::<i32>(&format!("{}{}", dir, "spike_clusters.npy")).unwrap();
+
+    // println!("Amp len {}", amplitudes.len());
+    // println!("Cluster len {}", clusters.len());
+
+    // let file_len = arr.len();
+    // let mut randoms = vec![];
+    // let mut data: Vec<f64> = vec![];
+    //
+    // let mut rng = rand::thread_rng();
+    // randoms.append(&mut vec![0]);
+    // data.push(arr[[0, 0]]);
+    //
+    // for _ in 0..100 {
+    //     let num = rng.gen_range(0..file_len);
+    //     randoms.push(num);
+    //     data.push(arr[[num, 0]]);
+    // }
+    //
+    // println!("gen_vals = {:?}", data);
+    // println!("idxes = {:?}", randoms);
+    //
+    // println!("arr len {}", data.len());
 }
 
 fn main() {

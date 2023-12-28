@@ -1,13 +1,17 @@
 pub mod numpy;
 pub mod binary;
+pub mod elements;
 
 use std::fs;
 use std::fs::{File, Metadata};
 use ndarray::{IxDyn, NdIndex};
 use ndarray_npy::ReadableElement;
 
-pub trait FileArray<T: Sized + Clone> {
-    fn get(&mut self, idx_vec: Vec<usize>) -> T;
+
+pub trait FileArray {
+    fn get(&mut self, idx_vec: Vec<usize>) -> f64;
+    fn shape(&self) -> Vec<usize>;
+    fn len(&self) -> usize; // length of full array, if N x M x ... return N*M*...
 }
 
 pub fn load_file(filename: &str, filecheck: impl Fn(Metadata) -> Result<(), String>) -> Result<File, String> {

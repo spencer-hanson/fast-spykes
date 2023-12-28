@@ -7,7 +7,7 @@ use crate::fast_spykes::dataset::Dataset;
 use crate::fast_spykes::io::numpy::{NumpyArray};
 use crate::fast_spykes::io::binary::{BinaryArray};
 use crate::fast_spykes::io::FileArray;
-use crate::fast_spykes::tests::test_io::dataset_to_testfile;
+use crate::fast_spykes::tests::io_testing::dataset_to_testfile;
 
 fn read_i16(file: &mut File) -> i16 {
     let mut buf: [u8 ; 2] = [0; 2];

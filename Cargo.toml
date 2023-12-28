@@ -12,4 +12,5 @@ npy-derive = "0.4"
 
 ndarray-npy = "0.8.1"
 ndarray = "0.15.6"
-serde = "1.0.193"
+serde_json = { version = "1.0.108", features = [] }
+serde = { version = "1.0", features = ["derive"] }

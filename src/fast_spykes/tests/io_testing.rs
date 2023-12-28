@@ -1,6 +1,6 @@
 use std::fs;
 use std::fs::File;
-use std::io::{Read, Seek, SeekFrom};
+use std::io::{Read, Seek, SeekFrom, Write};
 use rand::Rng;
 use serde::Serialize;
 use crate::fast_spykes::dataset::Dataset;
@@ -39,15 +39,15 @@ fn get_arr_by_idxs(mut filearr: Box<dyn FileArray>, idxs: &Vec<usize>) -> Vec<f6
 
 #[derive(Serialize)]
 struct DatasetSamples {
-    cur_amps: Vec<f64>,
-    cur_clusts: Vec<f64>,
+    curated_amps: Vec<f64>,
+    curated_clusts: Vec<f64>,
     raw_amps: Vec<f64>,
     raw_clusts: Vec<f64>,
     raw_samps: Vec<f64>
 }
 
 pub fn dataset_to_testfile(dataset: Box<Dataset>, filename: &str) {
-    let num_idxs = 100;
+    let num_idxs = 1000;
     let curated_indexes = get_rand_idxs(num_idxs, dataset.curated_spikes);
     let raw_indexes = get_rand_idxs(num_idxs, dataset.raw_spikes);
     let sample_indexes = get_rand_idxs(num_idxs, dataset.raw_samples);
@@ -67,6 +67,17 @@ pub fn dataset_to_testfile(dataset: Box<Dataset>, filename: &str) {
 
     println!("Getting raw samples");
     let raw_samps = get_arr_by_idxs(dataset.raw, &sample_indexes);
+
+    let samples = DatasetSamples {
+        curated_amps,
+        curated_clusts,
+        raw_amps,
+        raw_clusts,
+        raw_samps
+    };
+
+    let s = serde_json::to_string(&samples).unwrap();
+    fs::write(filename, s).unwrap();
 
     println!("Done");
 }

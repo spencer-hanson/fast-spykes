@@ -8,12 +8,14 @@ pub struct Dataset {
     pub raw: Box<dyn FileArray>,
     pub raw_samples: usize,
     pub raw_spikes: usize,
-    pub curated_spikes: usize
+    pub curated_spikes: usize,
+    pub filename: String
 }
 
 impl Dataset {
     pub fn new(curated_amplitudes: impl FileArray + 'static, curated_clusters: impl FileArray + 'static,
-               raw_amplitudes: impl FileArray + 'static, raw_clusters: impl FileArray + 'static, raw: impl FileArray + 'static) -> Box<Self> {
+               raw_amplitudes: impl FileArray + 'static, raw_clusters: impl FileArray + 'static, raw: impl FileArray + 'static,
+    filename: String) -> Box<Self> {
         if curated_amplitudes.len() != curated_clusters.len() {
             panic!("Curated amplitudes != Curated clusters!");
         }
@@ -33,7 +35,8 @@ impl Dataset {
             raw: Box::new(raw),
             raw_samples,
             raw_spikes,
-            curated_spikes
+            curated_spikes,
+            filename
         })
     }
 }

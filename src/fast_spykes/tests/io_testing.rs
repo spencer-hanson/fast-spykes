@@ -26,10 +26,10 @@ fn get_rand_idxs(samples: usize, siz: usize) -> Vec<usize> {
 fn get_arr_by_idxs(mut filearr: Box<dyn FileArray>, idxs: &Vec<usize>) -> Vec<f64> {
     let mut vals = vec![];
     for idx_num in 0..idxs.len() {
-        println!("Idx num {}", idx_num);
+        // println!("Idx num {}", idx_num);
         let v_idx = vec![idxs[idx_num]];
         let v = filearr.get(v_idx.clone());
-        println!("Read idx {:?} Value {}", v_idx, v);
+        // println!("Read idx {:?} Value {}", v_idx, v);
         vals.push(v);
     }
 
@@ -46,8 +46,10 @@ struct DatasetSamples {
     raw_samps: Vec<f64>
 }
 
-pub fn dataset_to_testfile(dataset: Box<Dataset>, filename: &str) {
+pub fn dataset_to_testfile(dataset: Box<Dataset>) {
     let num_idxs = 1000;
+    let filename = format!("{}.json", dataset.filename);
+
     let curated_indexes = get_rand_idxs(num_idxs, dataset.curated_spikes);
     let raw_indexes = get_rand_idxs(num_idxs, dataset.raw_spikes);
     let sample_indexes = get_rand_idxs(num_idxs, dataset.raw_samples);

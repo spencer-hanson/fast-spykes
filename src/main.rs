@@ -86,9 +86,9 @@ fn get_datasets(dates: Vec<&str>) -> Vec<Box<Dataset>> {
 
     let mut datasets = vec![];
 
-    for cur_date in dates.iter() {
-        let filename1 = format!("{}\\{}\\{}\\", FOLDER_PREFIX, *cur_date, FOLDER_SUFFIX);
-        let filename2 = format!("{}\\{}\\{}\\", RAW_FOLDER_PREFIX, *cur_date, RAW_FOLDER_SUFFIX);
+    for date in dates.iter() {
+        let filename1 = format!("{}\\{}\\{}", FOLDER_PREFIX, *date, FOLDER_SUFFIX);
+        let filename2 = format!("{}\\{}\\{}\\", RAW_FOLDER_PREFIX, *date, RAW_FOLDER_SUFFIX);
 
         // println!("---\nReading from date {}\n---", cur_date);
 
@@ -100,9 +100,9 @@ fn get_datasets(dates: Vec<&str>) -> Vec<Box<Dataset>> {
         let raw_kilo = read_kilosort(&filename2);
 
         println!("Getting Raw Continuous");
-        let cont = read_continuous(&format!("{RAW_FOLDER_PREFIX}\\{cur_date}\\{RAW_FOLDER_SUFFIX}\\continuous.dat"), num_channels);
+        let cont = read_continuous(&format!("{RAW_FOLDER_PREFIX}\\{date}\\{RAW_FOLDER_SUFFIX}\\continuous.dat"), num_channels);
 
-        datasets.push(Dataset::new(curated_kilo.0, curated_kilo.1, raw_kilo.0, raw_kilo.1, cont));
+        datasets.push(Dataset::new(curated_kilo.0, curated_kilo.1, raw_kilo.0, raw_kilo.1, cont, String::from(*date)));
     }
 
     return datasets;
@@ -110,26 +110,26 @@ fn get_datasets(dates: Vec<&str>) -> Vec<Box<Dataset>> {
 }
 
 fn main() {
-    // let ALL_DATES = vec![
-    //     "2023-04-11",
-    //     "2023-04-12",
-    //     "2023-04-13",
-    //     "2023-04-14",
-    //     "2023-04-17",
-    //     "2023-04-19",
-    //     "2023-04-21",
-    //     "2023-04-24",
-    //     "2023-04-25",
-    //     "2023-05-12",
-    //     "2023-05-15",
-    //     "2023-05-16",
-    //     "2023-05-17",
-    //     "2023-05-19",
-    //     "2023-05-23",
-    //     "2023-07-24",
-    //     "2023-07-26",
-    //     "2023-07-28",
-    // ];
+    let all_files = vec![
+        "2023-04-11",
+        "2023-04-12",
+        "2023-04-13",
+        "2023-04-14",
+        "2023-04-17",
+        "2023-04-19",
+        "2023-04-21",
+        "2023-04-24",
+        "2023-04-25",
+        "2023-05-12",
+        "2023-05-15",
+        "2023-05-16",
+        "2023-05-17",
+        "2023-05-19",
+        "2023-05-23",
+        "2023-07-24",
+        "2023-07-26",
+        "2023-07-28",
+    ];
 
     // let datasets = get_datasets(vec!["2023-04-11"]);
     // println!("Curated Amp shape {:?}", datasets[0].curated_amplitudes.shape());
@@ -140,8 +140,10 @@ fn main() {
     //
     // println!("Continuous shape {:?}", datasets[0].raw.shape());
 
-    let mut dataset = get_datasets(vec!["2023-04-11"]);
-    dataset_to_testfile(dataset.pop().unwrap(), "testfile.json");
+    let mut dataset = get_datasets(all_files);
+    for d in dataset {
+        dataset_to_testfile(d);
+    }
     println!("Do a dataset");
 
 }

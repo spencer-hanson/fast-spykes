@@ -1,42 +1,57 @@
+pub mod spikesorting;
+
+use crate::fast_spykes::dataset::spikesorting::SpikeSorting;
+use crate::fast_spykes::io::binary::BinaryArray;
 use crate::fast_spykes::io::FileArray;
 
+
 pub struct Dataset {
-    pub curated_amplitudes: Box<dyn FileArray>,
-    pub curated_clusters: Box<dyn FileArray>,
-    pub raw_amplitudes: Box<dyn FileArray>,
-    pub raw_clusters: Box<dyn FileArray>,
-    pub raw: Box<dyn FileArray>,
-    pub raw_samples: usize,
-    pub raw_spikes: usize,
-    pub curated_spikes: usize,
-    pub filename: String
+    spike_sortings: Vec<SpikeSorting>,
+    pub raw_continuous: Box<dyn FileArray>,
+    pub num_samples: usize,
+    pub name: String
 }
 
+
 impl Dataset {
-    pub fn new(curated_amplitudes: impl FileArray + 'static, curated_clusters: impl FileArray + 'static,
-               raw_amplitudes: impl FileArray + 'static, raw_clusters: impl FileArray + 'static, raw: impl FileArray + 'static,
-    filename: String) -> Box<Self> {
-        if curated_amplitudes.len() != curated_clusters.len() {
-            panic!("Curated amplitudes != Curated clusters!");
-        }
+    pub fn new(name: String, raw_continuous: impl FileArray + 'static) -> Box<Self> {
+        let sampl_len = raw_continuous.len();
+        return Box::new(Dataset{
+            spike_sortings: vec![],
+            raw_continuous: Box::new(raw_continuous),
+            num_samples: sampl_len,
+            name: name
+        });
+    }
 
-        if raw_amplitudes.len() != raw_clusters.len() {
-            panic!("Raw amplitudes != Raw clusters!");
-        }
-        let raw_samples = raw.len();;
-        let raw_spikes = raw_amplitudes.len();
-        let curated_spikes = curated_amplitudes.len();
+    pub fn from_continuous(name: String, filename: String, num_channels: usize) -> Box<Self> {
+        let continuous = BinaryArray::from_filename(&filename, num_channels);
+        // let el = continuous.get(vec![0]);
+        // Expect shape to be [samples*channels]
+        // println!("First continuous element {:?}", el);
+        // println!("Number of channels: {}", continuous.num_channels);
+        // println!("Number of samples per channel: {}", continuous.samples_per_channel);
 
-        Box::new(Dataset{
-            curated_amplitudes: Box::new(curated_amplitudes),
-            curated_clusters: Box::new(curated_clusters),
-            raw_amplitudes: Box::new(raw_amplitudes),
-            raw_clusters: Box::new(raw_clusters),
-            raw: Box::new(raw),
-            raw_samples,
-            raw_spikes,
-            curated_spikes,
-            filename
-        })
+        return Dataset::new(
+            name,
+            continuous
+        );
+    }
+
+    pub fn create_dataset(name: String, num_channels: usize, continuous_filepath: String, spike_sorting_paths: Vec<(String, String)>) -> Box<Self> {
+        let mut dataset = Dataset::from_continuous(name, continuous_filepath, num_channels);
+
+        for sorting_path in spike_sorting_paths {
+            dataset.add_spikesorting(SpikeSorting::from_kilosort_directory(sorting_path.0, sorting_path.1));
+        }
+        return dataset;
+    }
+
+    pub fn add_spikesorting(&mut self, sorting: SpikeSorting) {
+        self.spike_sortings.push(sorting);
+    }
+
+    pub fn get_spikesortings(&mut self) -> &mut Vec<SpikeSorting> {
+        return &mut self.spike_sortings;
     }
 }

@@ -4,9 +4,9 @@ use std::io::{Read, Seek, SeekFrom};
 use ndarray::{IxDyn, NdIndex};
 use crate::fast_spykes::io::{FileArray, load_file};
 
-pub fn load_binary_file(filename: &str, num_channels: u64) -> Result<File, String> {
+pub fn load_binary_file(filename: &str, num_channels: usize) -> Result<File, String> {
     let file = load_file(filename, |m| {
-        if m.len() % num_channels * 2 != 0 {
+        if m.len() % (num_channels as u64) * 2 != 0 {
             Err(format!("File is not in expected format! Total bytes should be divisible by 2*num_channels! File size: '{}'", m.len()))
         } else {
             Ok(())
@@ -17,7 +17,7 @@ pub fn load_binary_file(filename: &str, num_channels: u64) -> Result<File, Strin
 
 pub struct BinaryArray {
     file: File,
-    pub num_channels: u64,
+    pub num_channels: usize,
     pub file_size: u64,
     pub samples_per_channel: u64,
     cached_data: Vec<i16>
@@ -32,7 +32,7 @@ impl BinaryArray {
     The value of the least significant bit needed to convert the 16-bit integers to physical units
     is specified in the bitVolts field of the relevant channel in the structure.oebin JSON file
     */
-    pub fn from_filename(filename: &str, num_channels: u64) -> Self {
+    pub fn from_filename(filename: &str, num_channels: usize) -> Self {
         println!("Loading binary file");
         let file = load_binary_file(filename, num_channels).unwrap();
 
@@ -44,7 +44,7 @@ impl BinaryArray {
             file,
             num_channels,
             file_size,
-            samples_per_channel: file_size/num_channels*2,
+            samples_per_channel: file_size/(num_channels as u64) * 2,
             cached_data: vec![]
         }
     }

@@ -11,7 +11,7 @@ use crate::fast_spykes::tests::io_testing::dataset_to_testfile;
 
 fn main() {
 
-    let data_path: &str = "F:\\QualityMetrics\\datasets";
+    let data_path: &str = "D:\\QualityMetrics\\datasets";
     let dataset = "josh";
 
     let raw_spikesorting = ("raw", format!("{data_path}\\{dataset}\\raw"), "continuous\\Neuropix-PXI-100.ProbeA-AP");

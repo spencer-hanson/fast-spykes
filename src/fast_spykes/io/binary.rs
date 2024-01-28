@@ -19,8 +19,7 @@ pub struct BinaryArray {
     file: File,
     pub num_channels: usize,
     pub file_size: u64,
-    pub samples_per_channel: u64,
-    cached_data: Vec<i16>
+    pub samples_per_channel: u64
 }
 
 impl BinaryArray {
@@ -44,13 +43,8 @@ impl BinaryArray {
             file,
             num_channels,
             file_size,
-            samples_per_channel: file_size/(num_channels as u64) * 2,
-            cached_data: vec![]
+            samples_per_channel: file_size/(num_channels as u64) * 2
         }
-    }
-
-    pub fn clear_cache(&mut self) {
-        self.cached_data.clear(); // todo realloc? https://users.rust-lang.org/t/what-is-a-more-efficient-way-to-clear-a-vec/40190
     }
 }
 

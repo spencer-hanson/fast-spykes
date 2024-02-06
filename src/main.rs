@@ -11,15 +11,24 @@ use crate::fast_spykes::tests::io_testing::dataset_to_testfile;
 
 fn main() {
 
+    let folder = String::from("E:\\NeuroPixelsTest\\continuous\\Neuropix-PXI-104.ProbeA-AP");
+    let dataset = Dataset::create_dataset(
+        String::from("test_dataset"),
+        384,
+        format!("{}\\continuous.dat", folder.clone()),
+        vec![(String::from("main"), folder.clone())]
+    );
+    dataset_to_testfile(dataset);
+    todo!();
+
     let data_path: &str = "D:\\QualityMetrics\\datasets";
     let dataset = "josh";
-
     let raw_spikesorting = ("raw", format!("{data_path}\\{dataset}\\raw"), "continuous\\Neuropix-PXI-100.ProbeA-AP");
 
     let spikesorting_names = vec![
         // (name, prefix, suffix) -> prefix/<date>/suffix/<kilosort>
         raw_spikesorting.clone(),
-        ("curated", format!("{data_path}\\{dataset}\\curated"), "")
+        // ("curated", format!("{data_path}\\{dataset}\\curated"), "")
     ];
 
     let num_channels = 384; // TODO Find this out?

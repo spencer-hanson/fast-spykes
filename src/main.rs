@@ -1,34 +1,29 @@
 mod fast_spykes;
 
-use std::io::{Read, Seek};
-use rand::Rng;
 use crate::fast_spykes::dataset::Dataset;
-use crate::fast_spykes::io::numpy::{NumpyArray};
-use crate::fast_spykes::io::binary::{BinaryArray};
-use crate::fast_spykes::io::FileArray;
 use crate::fast_spykes::tests::io_testing::dataset_to_testfile;
 
 
 fn main() {
 
-    let folder = String::from("E:\\NeuroPixelsTest\\continuous\\Neuropix-PXI-104.ProbeA-AP");
-    let dataset = Dataset::create_dataset(
-        String::from("test_dataset"),
-        384,
-        format!("{}\\continuous.dat", folder.clone()),
-        vec![(String::from("main"), folder.clone())]
-    );
-    dataset_to_testfile(dataset);
-    todo!();
+    // let folder = String::from("E:\\NeuroPixelsTest\\continuous\\Neuropix-PXI-104.ProbeA-AP");
+    // let dataset = Dataset::create_dataset(
+    //     String::from("test_dataset"),
+    //     384,
+    //     format!("{}\\continuous.dat", folder.clone()),
+    //     vec![(String::from("main"), folder.clone())]
+    // );
+    // dataset_to_testfile(dataset);
+    // todo!();
 
-    let data_path: &str = "D:\\QualityMetrics\\datasets";
+    let data_path: &str = "E:\\QualityMetrics\\datasets";
     let dataset = "josh";
     let raw_spikesorting = ("raw", format!("{data_path}\\{dataset}\\raw"), "continuous\\Neuropix-PXI-100.ProbeA-AP");
 
     let spikesorting_names = vec![
         // (name, prefix, suffix) -> prefix/<date>/suffix/<kilosort>
         raw_spikesorting.clone(),
-        // ("curated", format!("{data_path}\\{dataset}\\curated"), "")
+        ("curated", format!("{data_path}\\{dataset}\\curated"), "")
     ];
 
     let num_channels = 384; // TODO Find this out?
@@ -85,10 +80,11 @@ fn main() {
         ));
     }
 
-    for d in datasets {
-        println!("Creating testdata for dataset {}", d.name);
-        dataset_to_testfile(d);
-    }
+    println!("Todo processing here");
 
-    println!("Done processing all datasets");
+    // for d in datasets {
+    //     println!("Creating testdata for dataset {}", d.name);
+    //     dataset_to_testfile(d);
+    // }
+    // println!("Done processing all datasets");
 }

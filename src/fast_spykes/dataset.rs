@@ -54,4 +54,8 @@ impl Dataset {
     pub fn get_spikesortings(&mut self) -> &mut Vec<SpikeSorting> {
         return &mut self.spike_sortings;
     }
+
+    pub fn get_continuous_filepath(&self) -> String {
+        return self.raw_continuous.get_filepath();
+    }
 }

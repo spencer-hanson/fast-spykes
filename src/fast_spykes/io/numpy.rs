@@ -1,7 +1,6 @@
-use std::fs::{File};
-use std::io::Read;
+use std::fs::File;
 use std::marker::PhantomData;
-use ndarray::{IxDyn, Array, NdIndex};
+use ndarray::{Array, IxDyn};
 use ndarray_npy::{ReadableElement, ReadNpyError, ReadNpyExt};
 use crate::fast_spykes::io::{FileArray, load_file};
 
@@ -20,7 +19,7 @@ enum DataNum {
 }
 
 pub struct NumpyArray<T1: Number, T2: Number> {
-    data_t1: Option<Array<T1, IxDyn>>,
+    data_t1: Option<Array<T1, IxDyn>>, // Try casting the array to different types since the file format may be different
     data_t2: Option<Array<T2, IxDyn>>,
     filename: String,
     data_num: DataNum,
@@ -95,6 +94,10 @@ impl<'a, T1: Number, T2: Number> FileArray for NumpyArray<T1, T2> {
             DataNum::D1 => self.data_t1.as_ref().unwrap().len(),
             DataNum::D2 => self.data_t2.as_ref().unwrap().len()
         };
+    }
+
+    fn get_filepath(&self) -> String {
+        return self.filename.clone();
     }
 }
 

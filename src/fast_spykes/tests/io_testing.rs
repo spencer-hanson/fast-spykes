@@ -1,6 +1,5 @@
 use std::collections::HashMap;
 use std::fs;
-use std::io::Write;
 use rand::Rng;
 use serde::Serialize;
 use crate::fast_spykes::dataset::Dataset;
@@ -21,7 +20,7 @@ fn get_rand_idxs(samples: usize, siz: usize) -> Vec<usize> {
     return idxes;
 }
 
-fn get_arr_by_idxs(mut filearr: &mut Box<dyn FileArray>, idxs: &Vec<usize>) -> Vec<f64> {
+fn get_arr_by_idxs(filearr: &mut Box<dyn FileArray>, idxs: &Vec<usize>) -> Vec<f64> {
     let mut vals = vec![];
     for idx_num in 0..idxs.len() {
         // println!("Idx num {}", idx_num);
@@ -37,6 +36,7 @@ fn get_arr_by_idxs(mut filearr: &mut Box<dyn FileArray>, idxs: &Vec<usize>) -> V
 
 #[derive(Serialize)]
 struct SampleData {
+    filepath: String,
     values: Vec<f64>,
     indexes: Vec<usize>
 }
@@ -49,13 +49,14 @@ struct DatasetSamples<'a> {
 }
 
 pub fn dataset_to_testfile(mut dataset: Box<Dataset>) {
-    let num_idxs = 1000;
+    let num_idxs = 10;
     let filename = format!("{}.json", dataset.name);
 
     let mut spikesortings: HashMap<&str, HashMap<&str, SampleData>> = HashMap::new();
 
     let sample_idxs = get_rand_idxs(num_idxs, dataset.num_samples);
     let raw_samples = get_arr_by_idxs(&mut dataset.raw_continuous, &sample_idxs);
+    let raw_filepath = dataset.get_continuous_filepath();
 
     for spike_sorting in dataset.get_spikesortings() {
         let amp_indexes = get_rand_idxs(num_idxs, spike_sorting.num_spikes);
@@ -65,15 +66,14 @@ pub fn dataset_to_testfile(mut dataset: Box<Dataset>) {
         let clust_data = get_arr_by_idxs(&mut spike_sorting.cluster_labels, &clust_indexes);
 
         let mut m: HashMap<&str, SampleData> = HashMap::new();
-        m.insert("amplitudes", SampleData{values: amp_data, indexes: amp_indexes});
-        m.insert("clusters", SampleData{values: clust_data, indexes: clust_indexes});
+        m.insert("amplitudes", SampleData{values: amp_data, indexes: amp_indexes, filepath: spike_sorting.get_amplitude_filepath()});
+        m.insert("clusters", SampleData{values: clust_data, indexes: clust_indexes, filepath: spike_sorting.get_cluster_labels_filepath()});
         spikesortings.insert(&spike_sorting.name, m);
     }
 
-
-
     let samples = DatasetSamples {
         raw_samples: SampleData{
+            filepath: raw_filepath,
             values: raw_samples,
             indexes: sample_idxs
         },

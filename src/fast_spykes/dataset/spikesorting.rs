@@ -61,9 +61,9 @@ impl SpikeSorting {
         - Amplitude cutoff link https://github.com/AllenInstitute/ecephys_spike_sorting/blob/master/ecephys_spike_sorting/modules/quality_metrics/metrics.py#L627
         */
         fn format_filename(base_path: &str, filename: &str) -> String {
-            let sep = std::path::MAIN_SEPARATOR_STR;
-            if base_path.len() > sep.len() {
-                if &base_path[base_path.len()-sep.len()..] != sep {
+            let sep = std::path::MAIN_SEPARATOR;
+            if base_path.len() > 1 {
+                if &base_path[base_path.len()-1..] != String::from(sep) {
                     return format!("{}{}{}", base_path, sep, filename);
                 } else {
                     return format!("{}{}", base_path, filename);
@@ -71,17 +71,16 @@ impl SpikeSorting {
             } else {
                 panic!("Given base path is not larger than the OS file separator!");
             }
-            todo!();
         }
         // Expect shape to be [spikes, 0]
         let amp_fn = &format_filename(filename, "amplitudes.npy");
-        let mut amplitudes = NumpyArray::<f64, f64>::from_filename(amp_fn).unwrap();
+        let amplitudes = NumpyArray::<f64, f64>::from_filename(amp_fn).unwrap();
         // println!("Amplitude first {:?}", amplitudes.get(vec![0, 0]));
         // println!("Amplitude shape {:?}", amplitudes.shape());
 
         // Expect shape to be [spikes]
         let clust_fn = &format_filename(filename, "spike_clusters.npy");
-        let mut clusters = NumpyArray::<u32, i32>::from_filename(clust_fn).unwrap();
+        let clusters = NumpyArray::<u32, i32>::from_filename(clust_fn).unwrap();
 
         // println!("Cluster first {:?}", clusters.get(vec![0]));
         // println!("Cluster shape {:?}", clusters.shape());
@@ -89,4 +88,11 @@ impl SpikeSorting {
         return (amplitudes, clusters);
     }
 
+    pub fn get_amplitude_filepath(&self) -> String {
+        return self.amplitudes.get_filepath();
+    }
+
+    pub fn get_cluster_labels_filepath(&self) -> String {
+        return self.cluster_labels.get_filepath();
+    }
 }

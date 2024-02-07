@@ -4,14 +4,13 @@ pub mod elements;
 
 use std::fs;
 use std::fs::{File, Metadata};
-use ndarray::{IxDyn, NdIndex};
-use ndarray_npy::ReadableElement;
 
 
 pub trait FileArray {
     fn get(&mut self, idx_vec: Vec<usize>) -> f64;
     fn shape(&self) -> Vec<usize>;
     fn len(&self) -> usize; // length of full array, if N x M x ... return N*M*...
+    fn get_filepath(&self) -> String;
 }
 
 pub fn load_file(filename: &str, filecheck: impl Fn(Metadata) -> Result<(), String>) -> Result<File, String> {

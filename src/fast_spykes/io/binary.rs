@@ -1,7 +1,6 @@
 use std::fs;
 use std::fs::File;
 use std::io::{Read, Seek, SeekFrom};
-use ndarray::{IxDyn, NdIndex};
 use crate::fast_spykes::io::{FileArray, load_file};
 
 pub fn load_binary_file(filename: &str, num_channels: usize) -> Result<File, String> {
@@ -17,6 +16,7 @@ pub fn load_binary_file(filename: &str, num_channels: usize) -> Result<File, Str
 
 pub struct BinaryArray {
     file: File,
+    filename: String,
     pub num_channels: usize,
     pub file_size: u64,
     pub samples_per_channel: u64
@@ -32,15 +32,17 @@ impl BinaryArray {
     is specified in the bitVolts field of the relevant channel in the structure.oebin JSON file
     */
     pub fn from_filename(filename: &str, num_channels: usize) -> Self {
-        println!("Loading binary file");
+        //println!("Loading binary file");
         let file = load_binary_file(filename, num_channels).unwrap();
 
-        println!("Getting binary file size");
+        //println!("Getting binary file size");
         let file_size = fs::metadata(filename).unwrap().len();
+        //println!("Filesize: {}", file_size);
 
-        println!("Creating binary arr struct");
+        //println!("Creating binary arr struct");
         BinaryArray{
             file,
+            filename: String::from(filename),
             num_channels,
             file_size,
             samples_per_channel: file_size/(num_channels as u64) * 2
@@ -51,7 +53,7 @@ impl BinaryArray {
 impl FileArray for BinaryArray {
     fn get(&mut self, idx_vec: Vec<usize>) -> f64 {
         let mut buf: [u8; 2] = [0; 2];
-        self.file.seek(SeekFrom::Start(idx_vec[0] as u64)).unwrap();
+        self.file.seek(SeekFrom::Start((idx_vec[0]*2) as u64)).unwrap();
         self.file.read_exact(&mut buf).ok();
         return i16::from_le_bytes(buf) as f64;
         // self.cached_data.push(i16::from_le_bytes(buf));
@@ -64,5 +66,9 @@ impl FileArray for BinaryArray {
 
     fn len(&self) -> usize {
         return (self.file_size / 2) as usize;
+    }
+
+    fn get_filepath(&self) -> String {
+        return self.filename.to_owned();
     }
 }

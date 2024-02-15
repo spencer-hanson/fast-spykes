@@ -1,0 +1,13 @@
+{
+  "id": "",
+  "params": {
+    "param1": "int/str/bool/any",
+    "param2": {
+      "any": 1
+    },
+    "param3": [
+      "int"
+    ]
+  },
+  "defaults": {}
+}

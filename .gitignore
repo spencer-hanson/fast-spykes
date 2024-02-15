@@ -1,8 +1,5 @@
 .idea
 Cargo.lock
-
-# Added by cargo
-
 /target
 *.pyc
 *.pyd

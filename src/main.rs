@@ -16,7 +16,7 @@ fn main() {
     // dataset_to_testfile(dataset);
     // todo!();
 
-    let data_path: &str = "E:\\QualityMetrics\\datasets";
+    let data_path: &str = "F:\\QualityMetrics\\datasets";
     let dataset = "josh";
     let raw_spikesorting = ("raw", format!("{data_path}\\{dataset}\\raw"), "continuous\\Neuropix-PXI-100.ProbeA-AP");
 
@@ -29,23 +29,23 @@ fn main() {
     let num_channels = 384; // TODO Find this out?
 
     let all_files = vec![
-        "2023-04-11",
-        "2023-04-12",
-        "2023-04-13",
-        "2023-04-14",
-        "2023-04-17",
-        "2023-04-19",
-        "2023-04-21",
-        "2023-04-24",
-        "2023-04-25",
+        // "2023-04-11",
+        // "2023-04-12",
+        // "2023-04-13",
+        // "2023-04-14",
+        // "2023-04-17",
+        // "2023-04-19",
+        // "2023-04-21",
+        // "2023-04-24",
+        // "2023-04-25",
         "2023-05-12",
-        "2023-05-15",
-        "2023-05-16",
-        "2023-05-17",
-        "2023-05-19",
-        "2023-05-23",
-        "2023-07-24",
-        "2023-07-26",
+        // "2023-05-15",
+        // "2023-05-16",
+        // "2023-05-17",
+        // "2023-05-19",
+        // "2023-05-23",
+        // "2023-07-24",
+        // "2023-07-26",
         // "2023-07-28", // Doesn't exist on Bard Brive
     ];
 
@@ -80,7 +80,9 @@ fn main() {
         ));
     }
 
-    println!("Todo processing here");
+    println!("hi from rust main");
+    // let d: Box<Dataset> = datasets.pop().unwrap();
+    
 
     // for d in datasets {
     //     println!("Creating testdata for dataset {}", d.name);

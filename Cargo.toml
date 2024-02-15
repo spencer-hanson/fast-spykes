@@ -3,17 +3,19 @@ name = "fast-spykes"
 version = "0.1.0"
 edition = "2021"
 
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+[lib]
+name = "fast_spykes"
+crate-type = ["cdylib"]
 
 [dependencies]
 rand = { version = "0.8.5", features = [] }
 npy = "0.4"
 npy-derive = "0.4"
-
+pyo3 = "0.20.2"
 ndarray-npy = "0.8.1"
 ndarray = "0.15.6"
 serde_json = { version = "1.0.108", features = [] }
 serde = { version = "1.0", features = ["derive"] }
 
-[profile.release]
+[profile.release]  # TODO Remove me, for profiling speed
 debug = 1
